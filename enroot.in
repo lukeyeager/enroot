@@ -80,6 +80,7 @@ export ENROOT_VERSION="@version@"
 
 source "${ENROOT_LIBRARY_PATH}/common.sh"
 source "${ENROOT_LIBRARY_PATH}/docker.sh"
+source "${ENROOT_LIBRARY_PATH}/docker_ugly.sh"
 source "${ENROOT_LIBRARY_PATH}/runtime.sh"
 
 enroot::usage() {

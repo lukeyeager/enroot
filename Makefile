@@ -21,10 +21,11 @@ VERSION := 1.1.0
 
 BIN := enroot
 
-SRCS := src/common.sh  \
-        src/bundle.sh  \
-        src/docker.sh  \
-        src/init.sh    \
+SRCS := src/common.sh       \
+        src/bundle.sh       \
+        src/docker.sh       \
+        src/docker_ugly.sh  \
+        src/init.sh         \
         src/runtime.sh
 
 DEPS := deps/dist/usr/bin/enroot-makeself \

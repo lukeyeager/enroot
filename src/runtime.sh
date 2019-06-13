@@ -333,6 +333,8 @@ runtime::import() {
 
     # Import a container image from the URI specified.
     case "${uri}" in
+    docker-ugly://*)
+        docker_ugly::import "${uri}" "${filename}" ;;
     docker://*)
         docker::import "${uri}" "${filename}" ;;
     *)
