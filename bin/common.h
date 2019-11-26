@@ -71,7 +71,7 @@ warndbg(const char *fmt, ...)
 }
 
 static inline bool
-isempty(const char *str)
+strnull(const char *str)
 {
         return (str == NULL || *str == '\0');
 }

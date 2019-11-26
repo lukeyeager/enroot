@@ -315,9 +315,9 @@ print_motd(const char *motd, const char *hushlogin)
 {
         char *buf, *ptr, *file;
 
-        if (isempty(motd))
+        if (strnull(motd))
                 return (0);
-        if (!isempty(hushlogin)) {
+        if (!strnull(hushlogin)) {
                 /* TODO If the path is absolute we need to check for the user/shell. */
                 if (!access(hushlogin, F_OK))
                         return (0);
@@ -338,7 +338,7 @@ set_mailbox(const char *dir, const char *file)
 {
         char path[PATH_MAX];
 
-        if (isempty(dir) || isempty(file))
+        if (strnull(dir) || strnull(file))
                 return (0);
         if ((size_t)snprintf(path, sizeof(path), "%s/%s", dir, file) >= sizeof(path)) {
                 errno = ENAMETOOLONG;
@@ -357,7 +357,7 @@ set_timezone(const char *tz)
         size_t n = 0;
         int rv = -1;
 
-        if (isempty(tz))
+        if (strnull(tz))
                 return (0);
         if (*tz == '/') {
                 if ((fs = fopen(tz, "r")) == NULL)
@@ -374,7 +374,7 @@ set_timezone(const char *tz)
                         goto err;
         }
         ptr = strtrim(buf, "TZ=");
-        if (!isempty(ptr) && setenv("TZ", ptr, 0) < 0)
+        if (!strnull(ptr) && setenv("TZ", ptr, 0) < 0)
                 goto err;
         rv = 0;
 
@@ -429,7 +429,7 @@ set_umask(const char *mask, const struct passwd *pw)
         mode_t m;
         struct group *gr;
 
-        if (!isempty(mask)) {
+        if (!strnull(mask)) {
                 m = (mode_t)strtou(mask, NULL, 0, 0, (mode_t)-1, &e);
                 if (e != 0) {
                         errno = e;
@@ -457,7 +457,7 @@ set_ulimit(const char *blocks)
         int e;
         rlim_t l;
 
-        if (isempty(blocks))
+        if (strnull(blocks))
                 return (0);
         if (!strcmp(blocks, "-1"))
                 l = RLIM_INFINITY;
@@ -540,7 +540,7 @@ set_utmp(const char *user)
                 }
         }
 
-        if (!isempty(user)) {
+        if (!strnull(user)) {
                 if (strlcpy(ut.ut_user, user, sizeof(ut.ut_user)) >= sizeof(ut.ut_user))
                         goto err_toolong;
         }
@@ -593,18 +593,18 @@ do_login(char **fakeshell, char **hushlogin, char **motd)
                 warndbg("failed to read shadow database");
 
         setenv("TERM", "dumb", 0);
-        if (pw != NULL && !isempty(pw->pw_dir))
+        if (pw != NULL && !strnull(pw->pw_dir))
                 setenv("HOME", pw->pw_dir, 0);
-        if (pw != NULL && !isempty(pw->pw_shell))
+        if (pw != NULL && !strnull(pw->pw_shell))
                 setenv("SHELL", pw->pw_shell, 0);
-        if (pw != NULL && !isempty(pw->pw_name))
+        if (pw != NULL && !strnull(pw->pw_name))
                 setenv("USER", pw->pw_name, 0);
-        if (pw != NULL &&  !isempty(logname))
+        if (pw != NULL &&  !strnull(logname))
                 setenv("LOGNAME", logname, 0);
 
         if ((ptr = get_param(&conf, euid == 0 ? "ENV_SUPATH" : "ENV_PATH")) != NULL)
                 ptr = strtrim(ptr, "PATH=");
-        if (isempty(ptr))
+        if (strnull(ptr))
                 ptr = (euid == 0) ? _PATH_STDPATH : _PATH_DEFPATH;
         setenv("PATH", ptr, 0);
 
@@ -637,7 +637,7 @@ do_login(char **fakeshell, char **hushlogin, char **motd)
                 warndbg("failed to record utmp login");
 
         ptr = getenv("HOME");
-        if (!isempty(ptr) && chdir(ptr) < 0) {
+        if (!strnull(ptr) && chdir(ptr) < 0) {
                 if (has_param(&conf, "DEFAULT_HOME"))
                         warn("failed to change directory: %s", ptr);
                 else
@@ -666,11 +666,11 @@ do_init(int argc, char *argv[], bool login)
                         warndbg("failed to run login");
         }
 
-        if (!isempty(fakeshell) && !access(fakeshell, X_OK))
+        if (!strnull(fakeshell) && !access(fakeshell, X_OK))
                 shell = fakeshell;
         else {
                 shell = getenv("SHELL");
-                if (isempty(shell) || access(shell, X_OK))
+                if (strnull(shell) || access(shell, X_OK))
                         shell = PATH_SHELL;
         }
 
