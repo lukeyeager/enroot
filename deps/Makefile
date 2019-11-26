@@ -48,6 +48,6 @@ makeself: makeself/.stamp
 clean:
 	-cd makeself && { git clean -f -d -x; $(RM) .stamp; }
 	-cd libbsd && { git clean -f -d -x; $(MAKE) distclean; $(RM) .stamp; }
-	-cd musl && { git clean -f -d -x; $(MAKE) distclean; $(RM) .stamp; }
+	-cd musl && { git clean -f -d -x; $(MAKE) distclean; $(RM) .stamp; git checkout -- tools/musl-gcc.specs.sh; }
 	-cd linux-headers && { git clean -f -d -x; $(RM) .stamp; }
 	rm -rf dist
